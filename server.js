@@ -8,7 +8,7 @@ const client = new MongoClient('mongodb://localhost:27017');
 const app = async () => {
     const connection = await client.connect().catch(console.error);
     const db = connection.db('moviesGQL')
-    const resolvers =buildResolvers(db);
+    const resolvers = buildResolvers(db);
     const server = new ApolloServer({ typeDefs, resolvers });
     server.listen().then(({ url }) => {
         console.log(`🚀  Server ready at ${url}`);
