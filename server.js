@@ -1,13 +1,15 @@
 const { ApolloServer } = require("apollo-server");
 const { MongoClient } = require('mongodb');
 const typeDefs = require("./typeDefs");
-const resolvers = require("./resolvers");
+const buildResolvers = require("./buildResolvers");
 
-const server = new ApolloServer({ typeDefs, resolvers });
 const client = new MongoClient('mongodb://localhost:27017'); 
 
 const app = async () => {
-    await client.connect().then(console.log('Mongo Connected')).catch(console.error);
+    const connection = await client.connect().catch(console.error);
+    const db = connection.db('moviesGQL')
+    const resolvers =buildResolvers(db);
+    const server = new ApolloServer({ typeDefs, resolvers });
     server.listen().then(({ url }) => {
         console.log(`🚀  Server ready at ${url}`);
     });
